@@ -74,3 +74,46 @@ const PROJECT_LIST = [
 ];
 
 //Escribe aquí tu solución / escriviu aquí la vostra solució:
+
+// C. Función renderProjects
+function renderProjects() {
+    const tplProject = document.querySelector('#tpl-project').content;
+    const tplTag = document.querySelector('#tpl-tag').content;
+    const fragment = document.createDocumentFragment();
+
+    PROJECT_LIST.forEach(project => {
+        const node = tplProject.cloneNode(true);
+        const div = node.querySelector('.js-project');
+
+        div.setAttribute('data-id', project.id);
+        div.setAttribute('data-tags', project.tags.join(','));
+        div.setAttribute('data-search', project.search.join(','));
+        div.setAttribute('data-archived', project.archived);
+
+        if (project.archived) div.classList.add('archived');
+        if (project.progress === 100) div.classList.add('completed');
+
+        node.querySelector('.js-name').textContent = project.name;
+        node.querySelector('.js-progress').textContent = project.progress;
+        node.querySelector('.js-excerpt').innerHTML = project.excerpt;
+
+        const category = CATEGORY_LIST.find(c => c.id === project.categoryId);
+        node.querySelector('.js-category').textContent = category ? category.name : '';
+
+        const tagsContainer = node.querySelector('.js-tags');
+        project.tags.forEach(tag => {
+            const tagNode = tplTag.cloneNode(true);
+            const link = tagNode.querySelector('.js-tag-link');
+            link.setAttribute('data-tag', tag);
+            link.textContent = tag;
+            tagsContainer.appendChild(tagNode);
+        });
+
+        fragment.appendChild(node);
+    });
+
+    document.querySelector('.js-project-list').appendChild(fragment);
+}
+
+// D. Llamada inicial
+renderProjects();
